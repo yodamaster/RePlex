@@ -26,3 +26,11 @@
 *.exe
 *.out
 *.app
+
+# Premake byproducts
+Makefile
+*.make
+*.xcworkspace
+*.xcodeproj
+bin
+obj
