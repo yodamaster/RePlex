@@ -12,13 +12,8 @@ workspace "RePlex"
     defines { "RELEASE" }
     optimize "On"
 
-  project "RePlex"
-    kind "StaticLib"
-    files { "lib/**.h", "lib/**.cpp", "lib/pub/*.h" }
-
   project "RePlexRuntime"
     kind "ConsoleApp"
-    links { "RePlex" }
     files { "runtime/**.h", "runtime/**.cpp" }
     includedirs { "lib/pub", "test/pub" }
 
