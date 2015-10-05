@@ -15,17 +15,19 @@ public:
 
   static void LoadLibrary() { GetInstance().Load(); }
   static void ReloadLibrary() { GetInstance().Reload(); }
+  static void UnloadLibrary() { GetInstance().Unload(); }
 
-protected:
   static E& GetInstance()
   {
     static E instance;
     return instance;
   }
 
-  RePlexModule(SymbolArray& symbols) : m_symbols(symbols) {}
-
   virtual const char* GetPath() const = 0;
+
+protected:
+
+  RePlexModule(SymbolArray& symbols) : m_symbols(symbols) {}
 
   template <size_t Index, typename Ret, typename... Args>
   Ret Execute(Args... args)
@@ -53,9 +55,16 @@ private:
     LoadSymbols();
   }
 
-  void Reload()
+  void Unload()
   {
     dlclose(m_libHandle);
+    m_libHandle = nullptr;
+    UnloadSymbols();
+  }
+
+  void Reload()
+  {
+    Unload();
     Load();
   }
 
@@ -65,6 +74,14 @@ private:
     {
       symbol.second = dlsym(m_libHandle, symbol.first);
     }
+  }
+
+  void UnloadSymbols()
+  {
+    for (auto&& symbol : m_symbols)
+      {
+        symbol.second = nullptr;
+      }
   }
 
   void* m_libHandle;

@@ -4,7 +4,7 @@
 
 extern "C"
 {
-  void foo(int);
+  int foo(int);
   extern int bar;
 }
 
@@ -16,9 +16,9 @@ std::array<std::pair<const char*, void*>, 2> g_exports = {
 class TestModule : public RePlexModule<TestModule, g_exports.size()>
 {
 public:
-  static void Foo(int input)
+  static int Foo(int input)
   {
-    GetInstance().Execute<0, void, int>(input);
+    return GetInstance().Execute<0, int, int>(input);
   }
 
   static int GetBar()
@@ -28,13 +28,8 @@ public:
 
   TestModule() : RePlexModule(g_exports) {}
 
-protected:
   virtual const char* GetPath() const override
   {
-#ifdef DEBUG
     return "bin/Debug/libRePlexTest.dylib";
-#else
-    return "bin/Release/libRePlexTest.dylib";
-#endif
   }
 };
